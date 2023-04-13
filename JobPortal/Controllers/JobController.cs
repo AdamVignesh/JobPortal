@@ -15,18 +15,21 @@ namespace JobPortal.Controllers
             this.configuration= configuration;
         }
         // GET: JobController
-        public ActionResult Index()
+        public ActionResult Index(string searchText,string searchType)
         {
             string connectionString = configuration.GetConnectionString("JOB-PORTAL");
             SqlConnection connection = new(connectionString);
 
             connection.Open();
             List<Job>jobList = new List<Job>();
-
-
+            searchText ??= "";
+            searchType ??= "";
+           // string searchedText= (ViewBag.SearchText==null)?"": (string)ViewBag.SearchText;
+            Console.WriteLine("search text"+searchText);
             string query = $"SELECT j.job_id,j.job_name,c.cat_name,s.sub_cat_name FROM JOB j JOIN CATEGORY c ON j.cat_id = c.cat_id  JOIN SUB_CATEGORY s ON j.sub_id=s.sub_id";
             SqlCommand command = new SqlCommand(query, connection);
 
+            
             using(SqlDataReader dataReader = command.ExecuteReader())
             {
                 while (dataReader.Read())
@@ -37,17 +40,46 @@ namespace JobPortal.Controllers
                     job.cat_name =((string)dataReader["cat_name"]);
                     job.sub_name =((string)dataReader["sub_cat_name"]);
 
-
-                    jobList.Add(job);
-
-
+                    if ( searchType.Equals("name"))
+                    {
+                        if (searchText.Length != 0 && job.job_name.StartsWith(searchText))
+                            jobList.Add(job);
+                        if (searchText.Length == 0)
+                            jobList.Add(job);
+                    }
+                    else if (searchType.Equals("category"))
+                    {
+                        if (searchText.Length != 0 && job.cat_name.StartsWith(searchText))
+                            jobList.Add(job);
+                        if (searchText.Length == 0)
+                            jobList.Add(job);
+                    }
+                    else if (searchType.Equals("subCategory"))
+                    {
+                        if (searchText.Length != 0 && job.sub_name.StartsWith(searchText))
+                            jobList.Add(job);
+                        if (searchText.Length == 0)
+                            jobList.Add(job);
+                    }
+                    else
+                    {
+                        jobList.Add(job);
+                    }
+             
                 }
             }
             ViewBag.JobsList=jobList;
             connection.Close();
             return View();
         }
+        [HttpPost]
+        public ActionResult Index(IFormCollection collection)
+        {
+            ViewBag.SearchText = collection["search-text"];
+            Console.WriteLine("search Text in post :" + collection["search-text"]);
 
+            return RedirectToAction("Index", new { searchText=collection["search-text"], searchType = collection["search-type"] });
+        }
         // GET: JobController/Details/5
         public ActionResult Details(int id)
         {
@@ -118,7 +150,7 @@ namespace JobPortal.Controllers
 
                 Console.WriteLine(query);
 
-               // command.ExecuteNonQuery();
+                command.ExecuteNonQuery();
 
                 ViewBag.ResultMessage = "Job Added Successfully";
                 ViewBag.AlertCode = 1;

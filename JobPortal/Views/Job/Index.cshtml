@@ -9,6 +9,17 @@
 
 <div class="d-flex justify-content-between">
 <h1 class="d-inline">Job</h1>
+    <form asp-action="Index" method="post" class="d-flex">
+        <input class="form-control me-2" type="search" name="search-text" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+        <select type="submit" name="search-type" id="mySelect" class="form-select m-2" aria-label="Default select example">
+            
+            <option selected value="name">Search By Name</option>
+            <option value="category">Search By Category</option>
+            <option value="subCategory">Search By Sub Category</option>
+        </select>
+       
+    </form>
 <a class=" btn btn-success mt-3" asp-action="Create">Create New</a>
 </div>
 
