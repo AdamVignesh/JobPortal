@@ -1,0 +1,106 @@
+﻿@model IEnumerable<JobPortal.Models.Job>
+
+@{
+    ViewData["Title"] = "Job";
+    int editJobId = ViewBag.EditJobId == null ? -1 : ViewBag.EditJobId ;
+
+  
+}
+
+<div class="d-flex justify-content-between">
+<h1 class="d-inline">Job</h1>
+<a class=" btn btn-success mt-3" asp-action="Create">Create New</a>
+</div>
+
+
+<p>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                JOB ID
+            </th>
+            <th>
+                JOB NAME
+            </th>
+            <th>
+               JOB CATEGORY
+            </th>
+            <th>
+                JOB SUB CATEGORY
+            </th>
+            <th></th>
+            <th></th>
+
+        </tr>
+    </thead>
+    <tbody>
+        
+        @foreach (Job item in ViewBag.JobsList)
+        {
+            
+            <div class="modal fade" id="staticBackdrop_@item.job_id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form asp-action="Delete" asp-route-jobId=@item.job_id method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Are You Sure You Want To Delete?</h5>
+                            
+                        </div>
+                        <div class="modal-body">
+                            job @item.job_name would be deleted
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            if (item.job_id == editJobId)
+            {
+                <form method="post">
+                <tr>
+                    <td><input required type="number" readonly name="job-id" value="@item.job_id" class="form-control" /></td>
+                    <td><input required type="text" name="job-name" value="@item.job_name" class="form-control" /></td>
+                    <td><input required type="text" name="cat-id" value="@item.cat_name" class="form-control" /></td>
+                    <td><input required type="text" name="sub-cat-id" value="@item.sub_name" class="form-control" /></td>
+                    <td><button class="btn btn-success" type="submit">apply</button></td>
+                    <td>
+                        <a href="/Job" class="btn btn-danger">cancel</a>
+                    </td>
+                </tr>
+                </form>
+            }
+            else
+            {
+                <tr>
+                    <td>
+                @item.job_id
+            </td>
+            <td>
+               @item.job_name
+            </td>
+            <td>
+                @item.cat_name
+            </td>
+            <td>
+                @item.sub_name
+            </td>
+            <td>
+                        <a href="/Job/Edit?job_id=@item.job_id" class="btn p-2 btn-warning">Edit</a>
+            </td>
+            <td>
+                        <a data-bs-toggle="modal" data-bs-target="#staticBackdrop_@item.job_id"class="btn p-2 btn-danger">Delete</a>
+            </td>
+        </tr>
+        }
+}
+    </tbody>
+</table>
+
+
+<!-- Modal -->
+

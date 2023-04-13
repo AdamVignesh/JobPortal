@@ -1,0 +1,80 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    string ResultMessage = ViewBag.ResultMessage;
+    List<KeyValuePair<int,string>> categories = ViewBag.CategoriesList;
+    List<KeyValuePair<int, string>> Subcategories = ViewBag.SubCategoriesList;
+
+}
+
+<div >
+    <h1>Add Job</h1>
+    @if (ViewBag.AlertCode == 0 && ViewBag.ResultMessage.Length > 0)
+    {
+        Console.WriteLine(ViewBag.ResultMessage.Length);
+        <div>   
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong> @ResultMessage</strong>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    }
+    @if (ViewBag.AlertCode == 1 && ViewBag.ResultMessage.Length > 0)
+    {
+        Console.WriteLine(ViewBag.ResultMessage.Length);
+        <div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong> @ResultMessage</strong>
+                <button type="button" class="close" data-bs-dismiss="alert" aria-label="close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    }
+    <form method="post">
+        <div class="row mb-3 p-3">
+            <label class="col-sm-2 col-form-label">Job ID :</label>
+            <div class="col-sm-6">
+                <input required type="number" name="job-id" class="form-control" />
+            </div>
+        </div>
+        <div class="row mb-3 p-3 ">
+            <label class="col-sm-2 col-form-label">Job Name :</label>
+            <div class="col-sm-6">
+                <input required type="text" name="job-name" class="form-control" />
+            </div>
+        </div>
+        <div class="row mb-3 p-3 ">
+            <label class="col-sm-2 col-form-label">Category ID :</label>
+            <div class="col-sm-6">
+                @*<input required  name="cat-id" class="form-control" >*@
+                <select name="cat-id" class="form-select" aria-label="Default select example">
+                    @foreach(var category in categories)
+                    {
+                        <option value=@category.Key>@category.Value</option>
+                    }
+
+                  
+                </select>
+            </div>
+        </div>
+        <div class="row mb-3 p-3 ">
+            <label class="col-sm-2 col-form-label">Sub Category ID :</label>
+            <div class="col-sm-6">
+                <select name="sub-id" class="form-select" aria-label="Default select example">
+                    @foreach (var category in Subcategories)
+                    {
+                        <option value=@category.Key>@category.Value</option>
+                    }
+
+
+                </select>
+
+            </div>
+        </div>
+        <button type="submit" class="btn-success">submit</button>
+    </form>
+</div>
